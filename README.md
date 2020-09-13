@@ -1,6 +1,12 @@
 # ThreadExplorer
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.0.
+## Configuration
+
+Run `cp example.env .env` and modify `.env` file with your hub API key and secret.
+
+## Server
+
+Run `npm run start:server` to run the backend implemenation.
 
 ## Development server
 
