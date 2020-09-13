@@ -1,0 +1,35 @@
+<ng-container *ngrxLet="threads$ as threads; let e = $error">
+    <ng-container *ngIf="errors$ | async as e">
+        Threads Error {{e}}
+    </ng-container>
+    <ng-container *ngIf="!e">
+        <ion-list>
+            <ion-header>
+                <ion-label>Threads</ion-label>
+                <ion-item>
+                    <ion-input placeholder="Thread Name..." [(ngModel)]="addThreadText"></ion-input>
+                    <ion-button (click)="addThread()">ADD</ion-button>
+                </ion-item>
+            </ion-header>
+            <ion-menu-toggle [autoHide]="false">
+                <ng-container *ngFor="let thread of threads">
+                    <ion-item 
+                        button 
+                        class="toggle-button"
+                        (click)="selectThread(thread)"
+                        [color]="isSelected(thread.id) ? 'success' : 'secondary'">
+                        <ion-icon slot="start" [name]="isSelected(thread.id) ? 'chevron-down-outline' : 'chevron-forward-outline'"></ion-icon>
+                        <ion-label>
+                            {{thread.name}}
+                        </ion-label>
+                        <ion-button color="danger" (click)="deleteThread(thread)">Delete</ion-button>
+                    </ion-item>
+                    <app-collections *ngIf="isSelected(thread.id)"></app-collections>
+                </ng-container>
+                <ion-item *ngIf="threads.length === 0">
+                    <ion-label>No Threads Found</ion-label>
+                </ion-item>
+            </ion-menu-toggle>
+        </ion-list>
+    </ng-container>
+</ng-container>

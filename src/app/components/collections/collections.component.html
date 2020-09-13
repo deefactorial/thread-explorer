@@ -1,0 +1,28 @@
+<ion-item>
+    <ion-header>
+        <ion-label>Collections</ion-label>
+        <ion-item>
+            <ion-input placeholder="Collection Name..." [(ngModel)]="addCollectionText"></ion-input>
+            <ion-button (click)="addCollection()">ADD</ion-button>
+        </ion-item>
+    </ion-header>
+</ion-item>
+<ng-container *ngrxLet="collections$ as collections;">
+    <ng-container *ngIf="errors$ | async as e">
+        <ion-item color="danger">
+            <ion-label class="ion-text-wrap">Threads Error: {{e.type}}</ion-label>
+            <ion-label class="ion-text-wrap">{{getErrorMessage(e.payload)}}</ion-label>
+        </ion-item>
+    </ng-container>
+    <ng-container>
+        <ion-item *ngFor="let collection of collections">
+            <ion-icon name="folder-outline"></ion-icon>
+            <ion-label>{{collection.name}}</ion-label>
+            <ion-button color="danger" (click)="deleteCollection(collection)">Delete</ion-button>
+        </ion-item>
+        <ion-item *ngIf="collections.length === 0">
+            No Collections Found
+        </ion-item>
+    </ng-container>
+</ng-container>
+

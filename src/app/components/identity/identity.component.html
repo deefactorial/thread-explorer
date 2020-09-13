@@ -1,0 +1,18 @@
+<ng-container *ngrxLet="identity$ as id; let e = $error;">
+  <ng-container *ngIf="e">
+    Identity Error {{e}}
+  </ng-container>
+  <ng-container *ngIf="!e">
+    <ion-chip>
+      <ion-avatar>
+        <div class="avatar">
+          <svg width="25" height="25" [data-jdenticon-value]="id"></svg>
+        </div>
+      </ion-avatar>
+      <ion-label>
+        {{ id }}
+        <app-client></app-client>
+      </ion-label>
+    </ion-chip>
+  </ng-container>
+</ng-container>

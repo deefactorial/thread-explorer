@@ -1,0 +1,12 @@
+<ng-container *ngrxLet="client$ as client; let e = $error; let c = $complete">
+    <ng-container *ngIf="e">
+      Authentication Error {{e}}
+    </ng-container>
+    <ng-container *ngIf="c">
+      Authentication Completed {{c}}
+    </ng-container>
+    <ng-container *ngIf="!e && !c">
+      <span>Authenticated</span>
+      
+    </ng-container>
+  </ng-container>
