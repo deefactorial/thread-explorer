@@ -10,13 +10,19 @@
 <ng-container *ngrxLet="collections$ as collections;">
     <ng-container *ngIf="errors$ | async as e">
         <ion-item color="danger">
-            <ion-label class="ion-text-wrap">Threads Error: {{e.type}}</ion-label>
+            <ion-label class="ion-text-wrap">{{e.type}}</ion-label>
             <ion-label class="ion-text-wrap">{{getErrorMessage(e.payload)}}</ion-label>
         </ion-item>
     </ng-container>
     <ng-container>
-        <ion-item *ngFor="let collection of collections">
-            <ion-icon name="folder-outline"></ion-icon>
+        <ion-item 
+            button 
+            class="toggle-button"
+            *ngFor="let collection of collections" 
+            (click)="selectCollection(collection)"
+            [color]="isSelected(collection) ? 'success' : 'tertiary'"
+            >
+            <ion-icon [name]="isSelected(collection) ? 'folder-open-outline' : 'folder-outline'"></ion-icon>
             <ion-label>{{collection.name}}</ion-label>
             <ion-button color="danger" (click)="deleteCollection(collection)">Delete</ion-button>
         </ion-item>

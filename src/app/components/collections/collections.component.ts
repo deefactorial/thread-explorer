@@ -1,19 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ApplicationService } from 'src/app/services/application.service';
 import { Observable } from 'rxjs';
 import { EntityServices, EntityCollectionService, EntityAction } from '@ngrx/data';
 import { CollectionConfig } from 'src/app/store/collections/collection.model';
+import { ThreadModel } from 'src/app/store/threads/thread.model';
 
 @Component({
   selector: 'app-collections',
   templateUrl: './collections.component.html',
-  styleUrls: ['./collections.component.scss']
+  styleUrls: ['./collections.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CollectionsComponent implements OnInit {
 
   addCollectionText: string;
   collectionsService: EntityCollectionService<CollectionConfig>;
   collections$: Observable<Array<CollectionConfig>>;
+  selectedThread$: Observable<ThreadModel>;
   selectedCollection$: Observable<CollectionConfig>;
   errors$: Observable<EntityAction<any>>;
 
@@ -33,7 +36,14 @@ export class CollectionsComponent implements OnInit {
 
   addCollection(): void {
     // Note: Set a default schema of any to start with.
-    this.collectionsService.add({name: this.addCollectionText, schema: '{"type":"object"}'});
+    this.collectionsService.add({name: this.addCollectionText, schema: {
+      type: "object",
+      properties:{
+        _id: {
+          type: "string"
+        }
+      }
+    }});
   }
 
   deleteCollection(collection: CollectionConfig): void {
@@ -43,6 +53,18 @@ export class CollectionsComponent implements OnInit {
   getErrorMessage(error: any){
     if (!error) return;
     return error.data.error.error.message;
+  }
+
+  selectCollection(collection: CollectionConfig): void {
+    if (this.applicationService.isSelectedCollection(collection.name)) {
+      this.applicationService.selectedCollection = undefined;
+    } else {
+      this.applicationService.selectedCollection = collection;
+    }
+  }
+
+  isSelected(collection: CollectionConfig): boolean {
+    return this.applicationService.isSelectedCollection(collection.name);
   }
 
 }

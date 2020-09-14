@@ -6,7 +6,7 @@ export interface Collection {
 
 export interface CollectionConfig {
   name: string,
-  schema?: Uint8Array | string,
+  schema?: any,
   indexesList?: Array<Index>,
 }
 

@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { CollectionsComponent } from './components/collections/collections.component';
 import { ApplicationService } from './services/application.service';
+import { InstancesComponent } from './components/instances/instances.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { ApplicationService } from './services/application.service';
     IdentityComponent,
     ClientComponent,
     ThreadsComponent,
-    CollectionsComponent
+    CollectionsComponent,
+    InstancesComponent
   ],
   imports: [
     ReactiveComponentModule,
