@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Client, GetThreadReply, Identity, PrivateKey, UserAuth } from '@textile/hub';
+import { Client, Identity, PrivateKey, UserAuth } from '@textile/hub';
 // import { Client } from '@textile/threads-client';
 import { Buffer } from 'buffer';
 import { Observable, of } from 'rxjs';

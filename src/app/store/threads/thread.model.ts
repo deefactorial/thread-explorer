@@ -1,5 +1,5 @@
-import { GetThreadReply } from '@textile/hub';
+import { GetThreadResponse } from '@textile/hub';
 
-export interface ThreadModel extends GetThreadReply.AsObject {
+export interface ThreadModel extends GetThreadResponse.AsObject {
     
 }

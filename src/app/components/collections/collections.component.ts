@@ -18,6 +18,7 @@ export class CollectionsComponent implements OnInit {
   collections$: Observable<Array<CollectionConfig>>;
   selectedThread$: Observable<ThreadModel>;
   selectedCollection$: Observable<CollectionConfig>;
+  loading$: Observable<boolean>;
   errors$: Observable<EntityAction<any>>;
 
   constructor(
@@ -29,6 +30,7 @@ export class CollectionsComponent implements OnInit {
     this.collectionsService.load()
     this.selectedCollection$ = this.applicationService.selectedCollection$;
     this.errors$ = this.collectionsService.errors$;
+    this.loading$ = this.collectionsService.loading$;
   }
 
   ngOnInit(): void {
@@ -44,6 +46,7 @@ export class CollectionsComponent implements OnInit {
         }
       }
     }});
+    this.addCollectionText = undefined;
   }
 
   deleteCollection(collection: CollectionConfig): void {

@@ -17,6 +17,9 @@ import { IonicModule } from '@ionic/angular';
 import { CollectionsComponent } from './components/collections/collections.component';
 import { ApplicationService } from './services/application.service';
 import { InstancesComponent } from './components/instances/instances.component';
+import { EditorTabsComponent } from './components/editor-tabs/editor-tabs.component';
+import { JsonEditorComponent } from './components/json-editor/json-editor.component';
+import { MonacoEditorModule } from 'ngx-monaco-editor';
 
 @NgModule({
   declarations: [
@@ -25,7 +28,9 @@ import { InstancesComponent } from './components/instances/instances.component';
     ClientComponent,
     ThreadsComponent,
     CollectionsComponent,
-    InstancesComponent
+    InstancesComponent,
+    EditorTabsComponent,
+    JsonEditorComponent
   ],
   imports: [
     ReactiveComponentModule,
@@ -36,7 +41,8 @@ import { InstancesComponent } from './components/instances/instances.component';
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     AppStoreModule.forRoot(),
     FormsModule,
-    IonicModule.forRoot()
+    IonicModule.forRoot(),
+    MonacoEditorModule.forRoot()
   ],
   providers: [ApplicationService],
   bootstrap: [AppComponent]

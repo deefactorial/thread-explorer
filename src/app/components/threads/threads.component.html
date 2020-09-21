@@ -1,35 +1,41 @@
-<ng-container *ngrxLet="threads$ as threads; let e = $error">
+<ng-container *ngrxLet="threads$ as threads">
     <ng-container *ngIf="errors$ | async as e">
-        Threads Error {{e}}
+        <ion-item color="danger">
+            <ion-label class="ion-text-wrap">{{e.type}}</ion-label>
+            <ion-label class="ion-text-wrap">{{getErrorMessage(e.payload)}}</ion-label>
+        </ion-item>
     </ng-container>
-    <ng-container *ngIf="!e">
-        <ion-list>
+    <ion-list>
+        
+        <ion-item color="dark">
             <ion-header>
-                <ion-label>Threads</ion-label>
-                <ion-item>
+                <ion-label color="light">Threads</ion-label>
+                <ion-item color="dark">
                     <ion-input placeholder="Thread Name..." [(ngModel)]="addThreadText"></ion-input>
                     <ion-button (click)="addThread()">ADD</ion-button>
                 </ion-item>
             </ion-header>
-            <ion-menu-toggle [autoHide]="false">
-                <ng-container *ngFor="let thread of threads">
-                    <ion-item 
-                        button 
-                        class="toggle-button"
-                        (click)="selectThread(thread)"
-                        [color]="isSelected(thread.id) ? 'success' : 'secondary'">
-                        <ion-icon slot="start" [name]="isSelected(thread.id) ? 'chevron-down-outline' : 'chevron-forward-outline'"></ion-icon>
-                        <ion-label>
-                            {{thread.name}}
-                        </ion-label>
-                        <ion-button color="danger" (click)="deleteThread(thread)">Delete</ion-button>
-                    </ion-item>
-                    <app-collections *ngIf="isSelected(thread.id)"></app-collections>
-                </ng-container>
-                <ion-item *ngIf="threads.length === 0">
-                    <ion-label>No Threads Found</ion-label>
+        </ion-item>
+        
+        <ion-menu-toggle [autoHide]="false">
+            <ion-item *ngIf="loading$ | async" color="dark">
+                <ion-label color="light">Loading...</ion-label>
+            </ion-item>
+            <ng-container *ngFor="let thread of threads">
+                <ion-item 
+                    button 
+                    class="toggle-button"
+                    (click)="selectThread(thread)"
+                    [color]="isSelected(thread.id) ? 'success' : 'secondary'">
+                    <ion-icon slot="start" [name]="isSelected(thread.id) ? 'chevron-down-outline' : 'chevron-forward-outline'"></ion-icon>
+                    <ion-label>{{thread.name}}</ion-label>
+                    <ion-button color="danger" (click)="deleteThread(thread)">Delete</ion-button>
                 </ion-item>
-            </ion-menu-toggle>
-        </ion-list>
-    </ng-container>
+                <app-collections *ngIf="isSelected(thread.id)"></app-collections>
+            </ng-container>
+            <ion-item color="dark" *ngIf="!(loading$ | async) && threads.length === 0">
+                <ion-label color="light">No Threads Found</ion-label>
+            </ion-item>
+        </ion-menu-toggle>
+    </ion-list>
 </ng-container>

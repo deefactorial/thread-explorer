@@ -1,15 +1,15 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
-import { Collection } from './collection.model';
+import { CollectionConfig } from './collection.model';
 import * as CollectionActions from './collection.actions';
 
 export const collectionsFeatureKey = 'collections';
 
-export interface State extends EntityState<Collection> {
+export interface State extends EntityState<CollectionConfig> {
   // additional entities state properties
 }
 
-export const adapter: EntityAdapter<Collection> = createEntityAdapter<Collection>();
+export const adapter: EntityAdapter<CollectionConfig> = createEntityAdapter<CollectionConfig>();
 
 export const initialState: State = adapter.getInitialState({
   // additional entity state properties

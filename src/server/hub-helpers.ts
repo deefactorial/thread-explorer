@@ -5,7 +5,7 @@ import {createAPISig, Client} from '@textile/hub';
  * 
  * seconds (300) time until the sig expires
  */
-export const getAPISig = async (seconds: number = 300) => {
+export const getAPISig = async (seconds: number = 60 * 60 * 24) => {
   const expiration = new Date(Date.now() + 1000 * seconds)
   return await createAPISig(process.env.USER_API_SECRET, expiration)
 }

@@ -1,65 +1,83 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionDataService, QueryParams } from '@ngrx/data';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import { Update } from '@ngrx/entity';
 import { ThreadID, QueryJSON } from '@textile/hub';
-import { switchMap, map } from 'rxjs/operators';
+import { switchMap, map, tap } from 'rxjs/operators';
 import { HubClientService } from '../services/hub-client.service';
+import { CollectionConfig } from '../collections/collection.model';
+import { ApplicationService } from 'src/app/services/application.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InstanceEntityDataCollectionsService implements EntityCollectionDataService<any> {
-  private _config: InstanceEntityCollectionConfig;
-  public get config(): InstanceEntityCollectionConfig {
-    return this._config;
-  }
-  public set config(value: InstanceEntityCollectionConfig) {
-    this._config = value;
+
+  constructor(
+    private readonly hubClient: HubClientService,
+    private readonly applicationService: ApplicationService
+    ) { }
+  get name(): string {
+    return `${this.threadId.toString()}-${this.collectionConfig.name}`;
   }
 
-  constructor(private readonly hubClient: HubClientService) { }
-  get name(): string {
-    return `${this._config.threadId.toString()}-${this._config.collectionConfig.name}`;
+  get threadId(): ThreadID {
+    if (!this.applicationService.selectedThread) throw Error("Thread is not selected");
+    return ThreadID.fromString(this.applicationService.selectedThread.id);
   }
-  add(entity: any): Observable<any> {
-    if (!this._config) throw new Error('Config is not defined.');
+
+  get collectionConfig(): CollectionConfig {
+    if (!this.applicationService.selectedCollection) throw Error("Collection is not selected");
+    return this.applicationService.selectedCollection;
+  }
+
+  add(entity: string): Observable<any> {
+    const entityObj = JSON.parse(entity)
     return this.hubClient.client$.pipe(
-      map(client => client.writeTransaction(this._config.threadId, this._config.collectionConfig.name)),
-      switchMap(transaction => transaction.create([entity])),
-      map(() => entity)
+      map(client => client.writeTransaction(this.threadId, this.collectionConfig.name)),
+      switchMap(transaction => 
+        from(transaction.start()).pipe(
+          switchMap(() => from(transaction.create([entityObj])).pipe(
+            switchMap((ids) => from(transaction.end()).pipe(
+              tap(() => console.log('ids', ids)),
+              map(() => ids[0])
+            ))
+          ))
+        )
+      ),
+      map((id) => ({...entityObj, _id: id})),
+      tap((res) => console.log('res', res))
     )
   }
-  delete(id: string | number): Observable<number | string> {
-    if (!this._config) throw new Error('Config is not defined.');
-    if (typeof id === 'number') throw new Error('Delete on number id not defined.');
+  delete(id: string): Observable<number | string> {
     return this.hubClient.client$.pipe(
-      map(client => client.writeTransaction(this._config.threadId, this._config.collectionConfig.name)),
-      switchMap(transaction => transaction.delete([id])),
+      map(client => client.writeTransaction(this.threadId, this.collectionConfig.name)),
+      switchMap(transaction => from(transaction.start()).pipe(
+        switchMap(() => from(transaction.delete([id])).pipe(
+          switchMap(() => transaction.end())
+        ))
+      )),
       map(() => id)
     )
   }
   getAll(): Observable<any[]> {
-    if (!this._config) throw new Error('Config is not defined.');
     return this.hubClient.client$.pipe(
-      map(client => client.readTransaction(this._config.threadId, this._config.collectionConfig.name)),
-      switchMap(transaction => transaction.find({})),
-      map(list => list.instancesList)
+      switchMap(client => client.find(this.threadId, this.collectionConfig.name, {})),
+      map(list => list.instancesList),
+      tap((list) => console.log('list', list))
     )
   }
   getById(id: any): Observable<any> {
-    if (!this._config) throw new Error('Config is not defined.');
     return this.hubClient.client$.pipe(
-      map(client => client.readTransaction(this._config.threadId, this._config.collectionConfig.name)),
+      map(client => client.readTransaction(this.threadId, this.collectionConfig.name)),
       switchMap(transaction => transaction.findByID(id)),
       map(instance => instance.instance)
     )
   }
   getWithQuery(params: string | QueryParams): Observable<any[]> {
-    if (!this._config) throw new Error('Config is not defined.');
     const query = this.mapParamsToQueryJSON(params)
     return this.hubClient.client$.pipe(
-      map(client => client.readTransaction(this._config.threadId, this._config.collectionConfig.name)),
+      map(client => client.readTransaction(this.threadId, this.collectionConfig.name)),
       switchMap(transaction => transaction.find(query)),
       map(list => list.instancesList)
     )
@@ -71,21 +89,19 @@ export class InstanceEntityDataCollectionsService implements EntityCollectionDat
     throw new Error('QueryParams not defined for mapping to QueryJSON.');
   }
   update(update: Update<any>): Observable<any>{
-    if (!this._config) throw new Error('Config is not defined.');
     if (typeof update.id === 'number') throw new Error('Update on number id not defined.');
     return this.hubClient.client$.pipe(
-      map(client => client.readTransaction(this._config.threadId, this._config.collectionConfig.name)),
+      map(client => client.readTransaction(this.threadId, this.collectionConfig.name)),
       switchMap(transaction => transaction.findByID(update.id as string)),
       switchMap((item) => this.hubClient.client$.pipe(
-        map(client => client.writeTransaction(this._config.threadId, this._config.collectionConfig.name)),
+        map(client => client.writeTransaction(this.threadId, this.collectionConfig.name)),
         switchMap(transaction => transaction.save([{...item.instance, ...update.changes}]))
       ))
     )
   }
   upsert(entity: any): Observable<any> {
-    if (!this._config) throw new Error('Config is not defined.');
     return this.hubClient.client$.pipe(
-      map(client => client.writeTransaction(this._config.threadId, this._config.collectionConfig.name)),
+      map(client => client.writeTransaction(this.threadId, this.collectionConfig.name)),
       switchMap(transaction => transaction.save([entity]))
     )
   }
@@ -94,15 +110,4 @@ export class InstanceEntityDataCollectionsService implements EntityCollectionDat
 export interface InstanceEntityCollectionConfig {
   threadId: ThreadID,
   collectionConfig: CollectionConfig
-}
-
-export interface CollectionConfig {
-  name: string,
-  schema: Uint8Array | string,
-  indexesList: Array<IndexConfig>,
-}
-
-export interface IndexConfig {
-  path: string,
-  unique: boolean,
 }

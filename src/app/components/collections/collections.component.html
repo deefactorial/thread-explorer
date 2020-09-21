@@ -1,7 +1,7 @@
-<ion-item>
+<ion-item color="dark">
     <ion-header>
-        <ion-label>Collections</ion-label>
-        <ion-item>
+        <ion-label color="light">Collections</ion-label>
+        <ion-item color="dark">
             <ion-input placeholder="Collection Name..." [(ngModel)]="addCollectionText"></ion-input>
             <ion-button (click)="addCollection()">ADD</ion-button>
         </ion-item>
@@ -15,19 +15,23 @@
         </ion-item>
     </ng-container>
     <ng-container>
-        <ion-item 
-            button 
-            class="toggle-button"
-            *ngFor="let collection of collections" 
-            (click)="selectCollection(collection)"
-            [color]="isSelected(collection) ? 'success' : 'tertiary'"
-            >
-            <ion-icon [name]="isSelected(collection) ? 'folder-open-outline' : 'folder-outline'"></ion-icon>
-            <ion-label>{{collection.name}}</ion-label>
-            <ion-button color="danger" (click)="deleteCollection(collection)">Delete</ion-button>
+        <ion-item color="dark" *ngIf="loading$ | async">
+            <ion-label>Loading...</ion-label>
         </ion-item>
-        <ion-item *ngIf="collections.length === 0">
-            No Collections Found
+        <ng-container *ngFor="let collection of collections">
+            <ion-item 
+                button 
+                class="toggle-button"
+                (click)="selectCollection(collection)"
+                [color]="isSelected(collection) ? 'success' : 'tertiary'">
+                <ion-icon slot="start" [name]="isSelected(collection) ? 'folder-open-outline' : 'folder-outline'"></ion-icon>
+                <ion-label>{{collection.name}}</ion-label>
+                <ion-button color="danger" (click)="deleteCollection(collection)">Delete</ion-button>
+            </ion-item>
+            <app-instances *ngIf="isSelected(collection)"></app-instances>
+        </ng-container>
+        <ion-item color="dark" *ngIf="!(loading$ | async) && collections.length === 0">
+            <ion-label>No Collections Found</ion-label>
         </ion-item>
     </ng-container>
 </ng-container>

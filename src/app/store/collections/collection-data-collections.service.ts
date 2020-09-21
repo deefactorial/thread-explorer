@@ -40,22 +40,21 @@ export class CollectionDataCollectionsService implements EntityCollectionDataSer
     )
   }
   getAll(): Observable<CollectionConfig[]> {
-    throw new Error('Method is not implemented at this time');
-    // return this.hubClient.client$.pipe(
-    //   switchMap(client =>
-    //     client.listCollections(
-    //       this.getThreadId()
-    //     )
-    //   )
-    // )
+    return this.hubClient.client$.pipe(
+      switchMap(client =>
+        client.listCollections(
+          this.getThreadId()
+        )
+      )
+    )
   }
   getById(id: any): Observable<CollectionConfig> {
-    throw new Error('Method is not implemented at this time');
-    // return this.hubClient.client$.pipe(
-    //   switchMap(client =>
-    //     client.getCollectionInfo(this.getThreadId(), id) as Promise<CollectionConfig>
-    //   )
-    // )
+    // throw new Error('Method is not implemented at this time');
+    return this.hubClient.client$.pipe(
+      switchMap(client =>
+        client.getCollectionInfo(this.getThreadId(), id) as Promise<CollectionConfig>
+      )
+    )
   }
   getWithQuery(params: string | QueryParams): Observable<CollectionConfig[]> {
     throw new Error('getWithQuery method not implemented.');

@@ -34,6 +34,9 @@ export class ThreadsComponent {
   }
   deleteThread(thread: ThreadModel): void {
     this.threadsService.delete(thread);
+    if (this.applicationService.isSelected(thread.id as string)) {
+      this.applicationService.selectedThread = undefined;
+    }
   }
   selectThread(thread: ThreadModel): void {
     if (this.applicationService.isSelected(thread.id as string)) {
@@ -44,5 +47,9 @@ export class ThreadsComponent {
   }
   isSelected(threadId: string): boolean {
     return this.applicationService.isSelected(threadId);
+  }
+  getErrorMessage(error: any){
+    if (!error) return;
+    return error.data.error.error.message;
   }
 }

@@ -3,10 +3,13 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { ThreadModel } from '../store/threads/thread.model';
 import { CollectionConfig } from '../store/collections/collection.model';
 import { EntityCollectionService, EntityServices } from '@ngrx/data';
+import { Tabs } from '../models/tabs';
+import { Instance } from '../store/instances/instance.model';
 
 @Injectable()
 export class ApplicationService {
     private collectionsService: EntityCollectionService<CollectionConfig>;
+    private _selectedTab = new BehaviorSubject<Tabs>(Tabs.json);
 
     private _selectedThread$ = new BehaviorSubject<ThreadModel>(undefined);
     get selectedThread$(): Observable<ThreadModel> {
@@ -34,13 +37,37 @@ export class ApplicationService {
     get selectedCollection(): CollectionConfig {
         return this._selectedCollection$.value;
     }
-    set selectedCollection(thread: CollectionConfig) {
-        this._selectedCollection$.next(thread);
+    set selectedCollection(collection: CollectionConfig) {
+        this._selectedCollection$.next(collection);
     }
     isSelectedCollection(collectionName: string): boolean {
         if (!this._selectedCollection$.value) return false;
         return this._selectedCollection$.value.name === collectionName;
     }
+
+    set tab(tab: Tabs) {
+        this._selectedTab.next(tab);
+    }
+
+    get selectedTab$(): Observable<Tabs> {
+        return this._selectedTab.asObservable()
+    }
+
+    private _selectedInstance$ = new BehaviorSubject<Instance>(undefined);
+    get selectedInstance$(): Observable<Instance> {
+        return this._selectedInstance$.asObservable();
+    }
+    get selectedInstance(): Instance {
+        return this._selectedInstance$.value;
+    }
+    set selectedInstance(instance: Instance) {
+        this._selectedInstance$.next(instance);
+    }
+    isSelectedInstance(instanceId: string): boolean {
+        if (!this._selectedInstance$.value) return false;
+        return this._selectedInstance$.value._id === instanceId;
+    }
+
     constructor(private readonly entityServices: EntityServices,) {
         this.collectionsService = this.entityServices.getEntityCollectionService('Collection');
     }

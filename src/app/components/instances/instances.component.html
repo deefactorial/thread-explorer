@@ -1,3 +1,32 @@
-
-<ion-label>Instances</ion-label>
-
+<ion-item color="dark">
+    <ion-header>
+        <ion-label>Instances</ion-label>
+    </ion-header>
+</ion-item>
+<ng-container *ngrxLet="instances$ as instances;">
+    <ng-container *ngIf="errors$ | async as e">
+        <ion-item color="danger">
+            <ion-label class="ion-text-wrap">{{e.type}}</ion-label>
+            <ion-label class="ion-text-wrap">{{getErrorMessage(e.payload)}}</ion-label>
+        </ion-item>
+    </ng-container>
+    <ng-container>
+        <ion-item color="dark" *ngIf="loading$ | async">
+            <ion-label>Loading...</ion-label>
+        </ion-item>
+        <ng-container *ngFor="let instance of instances">
+            <ion-item 
+                button 
+                class="toggle-button"
+                (click)="selectInstance(instance)"
+                [color]="isSelected(instance) ? 'success' : 'tertiary'">
+                <ion-icon slot="start" [name]="isSelected(instance) ? 'folder-open-outline' : 'folder-outline'"></ion-icon>
+                <ion-label>{{instance._id}}</ion-label>
+                <ion-button color="danger" (click)="deleteInstance(instance)">Delete</ion-button>
+            </ion-item>
+        </ng-container>
+        <ion-item color="dark" *ngIf="!(loading$ | async) && instances && instances.length === 0">
+            <ion-label>No Instances Found</ion-label>
+        </ion-item>
+    </ng-container>
+</ng-container>

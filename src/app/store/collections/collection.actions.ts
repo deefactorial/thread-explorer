@@ -1,41 +1,41 @@
 import { createAction, props } from '@ngrx/store';
 import { Update } from '@ngrx/entity';
 
-import { Collection } from './collection.model';
+import { CollectionConfig } from './collection.model';
 
 export const loadCollections = createAction(
   '[Collection/API] Load Collections', 
-  props<{ collections: Collection[] }>()
+  props<{ collections: CollectionConfig[] }>()
 );
 
 export const addCollection = createAction(
   '[Collection/API] Add Collection',
-  props<{ collection: Collection }>()
+  props<{ collection: CollectionConfig }>()
 );
 
 export const upsertCollection = createAction(
   '[Collection/API] Upsert Collection',
-  props<{ collection: Collection }>()
+  props<{ collection: CollectionConfig }>()
 );
 
 export const addCollections = createAction(
   '[Collection/API] Add Collections',
-  props<{ collections: Collection[] }>()
+  props<{ collections: CollectionConfig[] }>()
 );
 
 export const upsertCollections = createAction(
   '[Collection/API] Upsert Collections',
-  props<{ collections: Collection[] }>()
+  props<{ collections: CollectionConfig[] }>()
 );
 
 export const updateCollection = createAction(
   '[Collection/API] Update Collection',
-  props<{ collection: Update<Collection> }>()
+  props<{ collection: Update<CollectionConfig> }>()
 );
 
 export const updateCollections = createAction(
   '[Collection/API] Update Collections',
-  props<{ collections: Update<Collection>[] }>()
+  props<{ collections: Update<CollectionConfig>[] }>()
 );
 
 export const deleteCollection = createAction(

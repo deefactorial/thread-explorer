@@ -1,0 +1,16 @@
+<ion-tabs>
+    <ion-tab-bar slot="top" color="dark" *ngrxLet="tab$ as tab">
+        <ion-tab-button [selected]="tab === Tabs.json" (click)="setTab(Tabs.json)">
+            <ion-icon name="code"></ion-icon>
+            <ion-label>JSON Editor</ion-label>
+        </ion-tab-button>
+        <ion-tab-button [selected]="tab === Tabs.schema" (click)="setTab(Tabs.schema)">
+            <ion-icon name="code-slash"></ion-icon>
+            <ion-label>Schema Editor</ion-label>
+        </ion-tab-button>
+        <ion-tab-button [selected]="tab === Tabs.form" (click)="setTab(Tabs.form)">
+            <ion-icon name="reader"></ion-icon>
+            <ion-label>Form Editor</ion-label>
+        </ion-tab-button>
+    </ion-tab-bar>
+</ion-tabs>
