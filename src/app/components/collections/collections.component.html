@@ -3,7 +3,7 @@
         <ion-label color="light">Collections</ion-label>
         <ion-item color="dark">
             <ion-input placeholder="Collection Name..." [(ngModel)]="addCollectionText"></ion-input>
-            <ion-button (click)="addCollection()">ADD</ion-button>
+            <ion-icon class="add" color="primary" slot="end" name="add-circle" (click)="addCollection()"></ion-icon>
         </ion-item>
     </ion-header>
 </ion-item>
@@ -23,10 +23,11 @@
                 button 
                 class="toggle-button"
                 (click)="selectCollection(collection)"
-                [color]="isSelected(collection) ? 'success' : 'tertiary'">
-                <ion-icon slot="start" [name]="isSelected(collection) ? 'folder-open-outline' : 'folder-outline'"></ion-icon>
+                [color]="isSelected(collection) ? 'light' : 'dark'">
+                <ion-icon class="first" size="small" [name]="isSelected(collection) ? 'caret-down' : 'caret-forward'"></ion-icon>
+                <ion-icon size="small" [name]="isSelected(collection) ? 'folder-open' : 'folder'"></ion-icon>
                 <ion-label>{{collection.name}}</ion-label>
-                <ion-button color="danger" (click)="deleteCollection(collection)">Delete</ion-button>
+                <ion-icon name="close-circle" color="danger" (click)="deleteCollection(collection)"></ion-icon>
             </ion-item>
             <app-instances *ngIf="isSelected(collection)"></app-instances>
         </ng-container>

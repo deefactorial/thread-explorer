@@ -21,15 +21,13 @@ export class JsonEditorComponent implements OnInit {
     private readonly applicationService: ApplicationService) {
     this.instanceService = this.entityServices.getEntityCollectionService('Instance');
     this.selectedInstance$ = this.applicationService.selectedInstance$.pipe(
-      tap(instance => console.log('instance', instance)),
-      map(instance => JSON.stringify(instance))
+      map(instance => JSON.stringify(instance, null, '\t'))
     );
   }
   ngOnInit(): void { 
     
   }
   editorInit(editor: EditorComponent) {
-    console.log('editor', editor)
     this.editor = editor;
   }
   add(): void {

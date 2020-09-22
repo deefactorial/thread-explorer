@@ -1,7 +1,5 @@
 <ion-item color="dark">
-    <ion-header>
-        <ion-label>Instances</ion-label>
-    </ion-header>
+    <ion-label>Instances</ion-label>
 </ion-item>
 <ng-container *ngrxLet="instances$ as instances;">
     <ng-container *ngIf="errors$ | async as e">
@@ -19,10 +17,10 @@
                 button 
                 class="toggle-button"
                 (click)="selectInstance(instance)"
-                [color]="isSelected(instance) ? 'success' : 'tertiary'">
-                <ion-icon slot="start" [name]="isSelected(instance) ? 'folder-open-outline' : 'folder-outline'"></ion-icon>
+                [color]="isSelected(instance) ? 'light' : 'dark'">
+                <ion-icon size="small" [name]="isSelected(instance) ? 'code-working' : 'code'"></ion-icon>
                 <ion-label>{{instance._id}}</ion-label>
-                <ion-button color="danger" (click)="deleteInstance(instance)">Delete</ion-button>
+                <ion-icon name="close-circle" color="danger" (click)="deleteInstance(instance)"></ion-icon>
             </ion-item>
         </ng-container>
         <ion-item color="dark" *ngIf="!(loading$ | async) && instances && instances.length === 0">

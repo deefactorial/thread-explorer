@@ -39,14 +39,12 @@ export class InstanceEntityDataCollectionsService implements EntityCollectionDat
         from(transaction.start()).pipe(
           switchMap(() => from(transaction.create([entityObj])).pipe(
             switchMap((ids) => from(transaction.end()).pipe(
-              tap(() => console.log('ids', ids)),
               map(() => ids[0])
             ))
           ))
         )
       ),
       map((id) => ({...entityObj, _id: id})),
-      tap((res) => console.log('res', res))
     )
   }
   delete(id: string): Observable<number | string> {
@@ -64,13 +62,18 @@ export class InstanceEntityDataCollectionsService implements EntityCollectionDat
     return this.hubClient.client$.pipe(
       switchMap(client => client.find(this.threadId, this.collectionConfig.name, {})),
       map(list => list.instancesList),
-      tap((list) => console.log('list', list))
     )
   }
   getById(id: any): Observable<any> {
     return this.hubClient.client$.pipe(
       map(client => client.readTransaction(this.threadId, this.collectionConfig.name)),
-      switchMap(transaction => transaction.findByID(id)),
+      switchMap(transaction => from(transaction.start()).pipe(
+        switchMap(() => from(transaction.findByID(id)).pipe(
+          switchMap(instance => from(transaction.end()).pipe(
+            map(() => instance)
+          ))
+        ))
+      )),
       map(instance => instance.instance)
     )
   }

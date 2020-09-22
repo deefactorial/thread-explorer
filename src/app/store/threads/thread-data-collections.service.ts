@@ -19,7 +19,6 @@ export class ThreadDataCollectionsService implements EntityCollectionDataService
   };
   add(entity: ThreadModel): Observable<ThreadModel>{
     return this.hubClient.client$.pipe(
-      tap(client => console.log('client', client)),
       switchMap(client => client.newDB(undefined, entity.name)),
       map(thread => ({id: thread.toString(), name: entity.name} as ThreadModel))
     )

@@ -12,7 +12,7 @@
                 <ion-label color="light">Threads</ion-label>
                 <ion-item color="dark">
                     <ion-input placeholder="Thread Name..." [(ngModel)]="addThreadText"></ion-input>
-                    <ion-button (click)="addThread()">ADD</ion-button>
+                    <ion-icon class="add" color="primary" slot="end" name="add-circle" (click)="addThread()"></ion-icon>
                 </ion-item>
             </ion-header>
         </ion-item>
@@ -26,10 +26,11 @@
                     button 
                     class="toggle-button"
                     (click)="selectThread(thread)"
-                    [color]="isSelected(thread.id) ? 'success' : 'secondary'">
-                    <ion-icon slot="start" [name]="isSelected(thread.id) ? 'chevron-down-outline' : 'chevron-forward-outline'"></ion-icon>
+                    [color]="isSelected(thread.id) ? 'light' : 'dark'">
+                    <ion-icon size="small" [name]="isSelected(thread.id) ? 'caret-down' : 'caret-forward'"></ion-icon>
+                    <ion-icon size="small" [name]="isSelected(thread.id) ? 'folder-open' : 'folder'"></ion-icon>
                     <ion-label>{{thread.name}}</ion-label>
-                    <ion-button color="danger" (click)="deleteThread(thread)">Delete</ion-button>
+                    <ion-icon name="close-circle" color="danger" (click)="deleteThread(thread)"></ion-icon>
                 </ion-item>
                 <app-collections *ngIf="isSelected(thread.id)"></app-collections>
             </ng-container>
