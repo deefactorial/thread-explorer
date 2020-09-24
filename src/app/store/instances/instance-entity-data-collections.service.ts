@@ -3,15 +3,16 @@ import { EntityCollectionDataService, QueryParams } from '@ngrx/data';
 import { Observable, from } from 'rxjs';
 import { Update } from '@ngrx/entity';
 import { ThreadID, QueryJSON } from '@textile/hub';
-import { switchMap, map, tap } from 'rxjs/operators';
+import { switchMap, map, tap, take, finalize, delay } from 'rxjs/operators';
 import { HubClientService } from '../services/hub-client.service';
 import { CollectionConfig } from '../collections/collection.model';
 import { ApplicationService } from 'src/app/services/application.service';
+import { Instance } from './instance.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class InstanceEntityDataCollectionsService implements EntityCollectionDataService<any> {
+export class InstanceEntityDataCollectionsService implements EntityCollectionDataService<Instance> {
 
   constructor(
     private readonly hubClient: HubClientService,
@@ -31,8 +32,7 @@ export class InstanceEntityDataCollectionsService implements EntityCollectionDat
     return this.applicationService.selectedCollection;
   }
 
-  add(entity: string): Observable<any> {
-    const entityObj = JSON.parse(entity)
+  add(entityObj: Instance): Observable<Instance> {
     return this.hubClient.client$.pipe(
       map(client => client.writeTransaction(this.threadId, this.collectionConfig.name)),
       switchMap(transaction => 
@@ -44,7 +44,7 @@ export class InstanceEntityDataCollectionsService implements EntityCollectionDat
           ))
         )
       ),
-      map((id) => ({...entityObj, _id: id})),
+      map((_id) => ({_id, ...entityObj}))
     )
   }
   delete(id: string): Observable<number | string> {
@@ -58,13 +58,13 @@ export class InstanceEntityDataCollectionsService implements EntityCollectionDat
       map(() => id)
     )
   }
-  getAll(): Observable<any[]> {
+  getAll(): Observable<Instance[]> {
     return this.hubClient.client$.pipe(
       switchMap(client => client.find(this.threadId, this.collectionConfig.name, {})),
-      map(list => list.instancesList),
+      map(list => list.instancesList)
     )
   }
-  getById(id: any): Observable<any> {
+  getById(id: any): Observable<Instance> {
     return this.hubClient.client$.pipe(
       map(client => client.readTransaction(this.threadId, this.collectionConfig.name)),
       switchMap(transaction => from(transaction.start()).pipe(
@@ -77,7 +77,7 @@ export class InstanceEntityDataCollectionsService implements EntityCollectionDat
       map(instance => instance.instance)
     )
   }
-  getWithQuery(params: string | QueryParams): Observable<any[]> {
+  getWithQuery(params: string | QueryParams): Observable<Instance[]> {
     const query = this.mapParamsToQueryJSON(params)
     return this.hubClient.client$.pipe(
       map(client => client.readTransaction(this.threadId, this.collectionConfig.name)),
@@ -91,22 +91,24 @@ export class InstanceEntityDataCollectionsService implements EntityCollectionDat
 
     throw new Error('QueryParams not defined for mapping to QueryJSON.');
   }
-  update(update: Update<any>): Observable<any>{
-    if (typeof update.id === 'number') throw new Error('Update on number id not defined.');
-    return this.hubClient.client$.pipe(
-      map(client => client.readTransaction(this.threadId, this.collectionConfig.name)),
-      switchMap(transaction => transaction.findByID(update.id as string)),
-      switchMap((item) => this.hubClient.client$.pipe(
-        map(client => client.writeTransaction(this.threadId, this.collectionConfig.name)),
-        switchMap(transaction => transaction.save([{...item.instance, ...update.changes}]))
-      ))
-    )
+  update(update: Update<Instance>): Observable<Instance>{
+    throw new Error('method not implemented');
+    // if (typeof update.id === 'number') throw new Error('Update on number id not defined.');
+    // return this.hubClient.client$.pipe(
+    //   map(client => client.readTransaction(this.threadId, this.collectionConfig.name)),
+    //   switchMap(transaction => transaction.findByID(update.id as string)),
+    //   switchMap((item) => this.hubClient.client$.pipe(
+    //     map(client => client.writeTransaction(this.threadId, this.collectionConfig.name)),
+    //     switchMap(transaction => transaction.save([{...item.instance, ...update.changes}]))
+    //   ))
+    // )
   }
-  upsert(entity: any): Observable<any> {
-    return this.hubClient.client$.pipe(
-      map(client => client.writeTransaction(this.threadId, this.collectionConfig.name)),
-      switchMap(transaction => transaction.save([entity]))
-    )
+  upsert(entity: Instance): Observable<Instance> {
+    throw new Error('method not implemented')
+    // return this.hubClient.client$.pipe(
+    //   map(client => client.writeTransaction(this.threadId, this.collectionConfig.name)),
+    //   switchMap(transaction => transaction.save([entity]))
+    // )
   }
 }
 

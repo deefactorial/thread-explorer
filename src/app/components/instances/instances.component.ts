@@ -3,16 +3,17 @@ import { EntityAction, EntityCollectionService, EntityServices } from '@ngrx/dat
 import { Observable } from 'rxjs';
 import { ApplicationService } from 'src/app/services/application.service';
 import { Instance } from 'src/app/store/instances/instance.model';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-instances',
   templateUrl: './instances.component.html',
   styleUrls: ['./instances.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InstancesComponent {
-  instanceService: EntityCollectionService<any>;
-  instances$: Observable<any>;
+  instanceService: EntityCollectionService<Instance>;
+  instances$: Observable<Array<Instance>>;
   loading$: Observable<boolean>;
   errors$: Observable<EntityAction<any>>;
 
@@ -21,7 +22,8 @@ export class InstancesComponent {
     private readonly applicationService: ApplicationService
   ) { 
     this.instanceService = this.entityServices.getEntityCollectionService('Instance');
-    this.instances$ = this.instanceService.getAll();
+    this.instanceService.load();
+    this.instances$ = this.instanceService.entities$;
     this.loading$ = this.instanceService.loading$;
     this.errors$ = this.instanceService.errors$;
   }

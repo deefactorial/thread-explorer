@@ -9,7 +9,6 @@ import { ThreadModel } from 'src/app/store/threads/thread.model';
   selector: 'app-collections',
   templateUrl: './collections.component.html',
   styleUrls: ['./collections.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CollectionsComponent implements OnInit {
 

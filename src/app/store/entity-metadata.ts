@@ -11,7 +11,7 @@ const entityMetadata: EntityMetadataMap = {
   }
 };
 
-const pluralNames = { Thread: 'Threads', Collection: 'Collections' };
+const pluralNames = { Thread: 'Threads', Collection: 'Collections', Instance: 'Instances' };
 
 export const entityConfig: EntityDataModuleConfig = {
   entityMetadata,

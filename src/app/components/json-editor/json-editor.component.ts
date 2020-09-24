@@ -31,6 +31,7 @@ export class JsonEditorComponent implements OnInit {
     this.editor = editor;
   }
   add(): void {
-    this.instanceService.add(this.editor.getValue());
+    const entityObj = JSON.parse(this.editor.getValue())
+    this.instanceService.add(entityObj);
   }
 }

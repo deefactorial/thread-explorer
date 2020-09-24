@@ -1,8 +1,5 @@
 import { ModuleWithProviders, Optional, SkipSelf, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { reducer as threadReducer } from './threads/thread.reducer';
-import { reducer as collectionReducer } from './collections/collection.reducer'
-import { reducer as instanceReducer } from './instances/instance.reducer'
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { HubClientService } from './services/hub-client.service';
@@ -16,9 +13,6 @@ import { InstanceEntityDataCollectionsService } from './instances/instance-entit
     imports: [
         CommonModule,
         StoreModule.forRoot({
-            'Threads': threadReducer,
-            'Collections': collectionReducer,
-            'Instances': instanceReducer
         }),
         EffectsModule.forRoot([
         ]),
